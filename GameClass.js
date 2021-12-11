@@ -11,6 +11,7 @@ class Game {
   _snake;
   _target;
   _board;
+  _isGameActive;
 
   static getInstance() {
     if (!this.gameInstance) {
@@ -47,16 +48,22 @@ class Game {
     this.ctx.clearRect(458, 0, 900, 900);
     this.ctx.clearRect(0, 455, 900, 900);
     this.getScore();
-    if (!checkHeadPosition(this._snake.getPartsCoordinates())) {
+    if (!checkHeadPosition(this._snake.getPartsCoordinates()) && this._isGameActive) {
       setTimeout(this.drawing.bind(this), playSpeed);
     }
   }
 
   startNewGame() {
+    this._isGameActive = true;
     this.key = "";
     this._snake.init();
     this._target.newTarget(this._snake);
     setTimeout(this.drawing.bind(this), 0);
+  }
+
+  endGame(){
+    this._isGameActive = false;
+    console.log('end')
   }
 
   handleKeyDown() {
@@ -73,7 +80,10 @@ class Game {
 
   handleButtonPress() {
     this.buttonStart.addEventListener("click", (event) => {
-      this.startNewGame();
+      this.endGame();
+      setTimeout(()=>{
+        this.startNewGame();
+      }, playSpeed);
     });
   }
 }
