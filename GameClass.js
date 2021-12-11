@@ -1,5 +1,5 @@
 import { checkIncludes, checkHeadPosition } from "./functions.js";
-import { playSpeed, controls, numStartParts } from "./constants.js";
+import { playSpeed, controls, numStartParts, boardsize } from "./constants.js";
 
 class Game {
   scoreElement = document.querySelector("#score-value");
@@ -63,7 +63,6 @@ class Game {
 
   endGame(){
     this._isGameActive = false;
-    console.log('end')
   }
 
   handleKeyDown() {
@@ -76,6 +75,10 @@ class Game {
 
   getScore() {
     this.scoreElement.textContent = this._snake.getSize() - numStartParts;
+    if(this.scoreElement.textContent === (boardsize**2 - numStartParts)) {
+      alert('You won this game!');
+      this.endGame();
+    }
   }
 
   handleButtonPress() {
