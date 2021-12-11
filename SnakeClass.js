@@ -5,6 +5,8 @@ class Snake {
   _parts = [];
   _lastPart;
   _head;
+  _prevKey;
+  _currKey;
 
   static getInstance() {
     if (!this.snakeInstance) {
@@ -15,6 +17,8 @@ class Snake {
   }
 
   init() {
+    this._prevKey = '';
+    this._currKey = '';
     const size = this.getSize();
     for (let i = 0; i < size; i++) {
       this._parts.shift();
@@ -34,7 +38,16 @@ class Snake {
     this._parts.pop();
     this._parts.push(new Part(this._head.getX(), this._head.getY()));
 
-    switch (key) {
+    if(!(this._prevKey === "ArrowUp" && key === "ArrowDown" ||
+    this._prevKey === "ArrowDown" && key === "ArrowUp" ||
+    this._prevKey === "ArrowLeft" && key === "ArrowRight" ||
+    this._prevKey === "ArrowRight" && key === "ArrowLeft")) {
+      this._currKey = key;
+    } else {
+      this._currKey = this._prevKey;
+    }
+
+    switch (this._currKey) {
       case "ArrowUp":
         this._head.setY(this._head.getY() - 1);
         break;
@@ -53,6 +66,7 @@ class Snake {
     }
 
     this._parts.push(this._head);
+    this._prevKey = this._currKey;
   }
 
   eatTarget() {
