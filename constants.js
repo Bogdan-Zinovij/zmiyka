@@ -1,7 +1,7 @@
-const sqrsize = 34;
-const boardsize = 12;
-const playSpeed = 200;
-const controls = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
-const numStartParts = 4;
+const SQR_SIZE = 34;
+const BOARD_SIZE = 12;
+const PLAY_SPEED = 200;
+const CONTROLS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+const NUM_START_PARTS = 4;
 
-export { sqrsize, boardsize, playSpeed, controls, numStartParts };
+export { SQR_SIZE, BOARD_SIZE, PLAY_SPEED, CONTROLS, NUM_START_PARTS };

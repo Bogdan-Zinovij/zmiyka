@@ -1,5 +1,5 @@
 import { checkIncludes, checkHeadPosition } from "./functions.js";
-import { playSpeed, controls, numStartParts, boardsize } from "./constants.js";
+import { PLAY_SPEED, CONTROLS, NUM_START_PARTS, BOARD_SIZE } from "./constants.js";
 
 class Game {
   scoreElement = document.querySelector("#score-value");
@@ -49,7 +49,7 @@ class Game {
     this.ctx.clearRect(0, 455, 900, 900);
     this.getScore();
     if (!checkHeadPosition(this._snake.getPartsCoordinates()) && this._isGameActive) {
-      setTimeout(this.drawing.bind(this), playSpeed);
+      setTimeout(this.drawing.bind(this), PLAY_SPEED);
     }
   }
 
@@ -67,15 +67,15 @@ class Game {
 
   handleKeyDown() {
     document.addEventListener("keydown", (event) => {
-      if (controls.includes(event.code)) {
+      if (CONTROLS.includes(event.code)) {
         this.key = event.code;
       }
     });
   }
 
   getScore() {
-    this.scoreElement.textContent = this._snake.getSize() - numStartParts;
-    if(this.scoreElement.textContent === (boardsize**2 - numStartParts)) {
+    this.scoreElement.textContent = this._snake.getSize() - NUM_START_PARTS;
+    if(this.scoreElement.textContent === (BOARD_SIZE**2 - NUM_START_PARTS)) {
       alert('You won this game!');
       this.endGame();
     }
@@ -86,7 +86,7 @@ class Game {
       this.endGame();
       setTimeout(()=>{
         this.startNewGame();
-      }, playSpeed);
+      }, PLAY_SPEED);
     });
   }
 }

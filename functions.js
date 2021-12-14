@@ -1,4 +1,4 @@
-import { boardsize } from "./constants.js";
+import { BOARD_SIZE } from "./constants.js";
 
 function checkHeadPosition(coordinates) {
   const xHead = coordinates[coordinates.length - 1][0];
@@ -14,9 +14,9 @@ function checkHeadPosition(coordinates) {
 
   if (
     xHead < 0 ||
-    xHead > boardsize ||
+    xHead > BOARD_SIZE ||
     yHead < 0 ||
-    yHead > boardsize ||
+    yHead > BOARD_SIZE ||
     count !== 0
   ) {
     return true;

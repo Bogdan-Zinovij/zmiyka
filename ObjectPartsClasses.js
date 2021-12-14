@@ -1,5 +1,5 @@
 import { checkIncludes } from "./functions.js";
-import { boardsize, sqrsize } from "./constants.js";
+import { BOARD_SIZE, SQR_SIZE } from "./constants.js";
 
 const partImage = new Image();
 partImage.src = "images/part.jpg";
@@ -18,7 +18,7 @@ class Part {
   }
 
   show(ctx) {
-    ctx.drawImage(this._image, this._x * sqrsize + 12, this._y * sqrsize + 7);
+    ctx.drawImage(this._image, this._x * SQR_SIZE + 12, this._y * SQR_SIZE + 7);
   }
 
   getX() {
@@ -43,7 +43,7 @@ class Board extends Part {
   }
 
   show(ctx) {
-    ctx.drawImage(this._image, this._x * sqrsize, this._y * sqrsize);
+    ctx.drawImage(this._image, this._x * SQR_SIZE, this._y * SQR_SIZE);
   }
 }
 
@@ -73,8 +73,8 @@ class Target extends Part {
 
   newTarget(snake) {
     do {
-      this._x = Math.floor(Math.random() * boardsize);
-      this._y = Math.floor(Math.random() * boardsize);
+      this._x = Math.floor(Math.random() * BOARD_SIZE);
+      this._y = Math.floor(Math.random() * BOARD_SIZE);
     } while (checkIncludes(this, snake.getPartsCoordinates()));
   }
 }
