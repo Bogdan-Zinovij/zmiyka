@@ -35,7 +35,7 @@ const mount = (root, gameAppEventService, config) => {
   root.appendChild(cvs);
 
   const ctx = cvs.getContext('2d');
-  const game = Game.getInstance();
+  const game = new Game();
 
   game.init(
     Snake.getInstance(),

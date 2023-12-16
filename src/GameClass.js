@@ -10,7 +10,6 @@ class Game {
   scoreElement = document.querySelector('#score-value');
   buttonStart = document.querySelector('#button-start');
 
-  static gameInstance;
   key = '';
   ctx;
   _snake;
@@ -19,14 +18,6 @@ class Game {
   _isGameActive;
 
   _timers = [];
-
-  static getInstance() {
-    if (!this.gameInstance) {
-      this.gameInstance = new Game();
-    }
-
-    return this.gameInstance;
-  }
 
   init(snake, target, board, ctx, gameAppEventService) {
     this._snake = snake;
