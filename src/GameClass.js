@@ -18,6 +18,8 @@ class Game {
   _board;
   _isGameActive;
 
+  _timers = [];
+
   static getInstance() {
     if (!this.gameInstance) {
       this.gameInstance = new Game();
@@ -26,15 +28,39 @@ class Game {
     return this.gameInstance;
   }
 
-  init(snake, target, board, ctx) {
+  init(snake, target, board, ctx, gameAppEventService) {
     this._snake = snake;
     this._target = target;
     this._board = board;
     this.ctx = ctx;
-    this.handleKeyDown();
-    this.handleButtonPress();
+    this.gameAppEventService = gameAppEventService;
+
     this.startNewGame();
+
+    document.addEventListener('keydown', this.handleKeyDown);
+
+    gameAppEventService?.subscribe(
+      gameAppEventService.GameAppEvent.RESTART,
+      this.handleButtonPress
+    );
+
+    if (this.buttonStart) {
+      this.buttonStart.addEventListener('click', this.handleButtonPress);
+    }
   }
+
+  destroy = () => {
+    document.removeEventListener('keydown', this.handleKeyDown);
+
+    this.gameAppEventService?.unsubscribe(
+      this.gameAppEventService.GameAppEvent.RESTART,
+      this.handleButtonPress
+    );
+
+    for (const timerId of this._timers) {
+      clearTimeout(timerId);
+    }
+  };
 
   drawing() {
     if (this.key !== '') {
@@ -53,11 +79,14 @@ class Game {
     this.ctx.clearRect(458, 0, 900, 900);
     this.ctx.clearRect(0, 455, 900, 900);
     this.getScore();
+
     if (
       !checkHeadPosition(this._snake.getPartsCoordinates()) &&
       this._isGameActive
     ) {
-      setTimeout(this.drawing.bind(this), PLAY_SPEED);
+      this._timers.push(setTimeout(this.drawing.bind(this), PLAY_SPEED));
+    } else {
+      this.gameAppEventService?.fire(this.gameAppEventService.GameAppEvent.END);
     }
   }
 
@@ -66,37 +95,46 @@ class Game {
     this.key = '';
     this._snake.init();
     this._target.newTarget(this._snake);
-    setTimeout(this.drawing.bind(this), 0);
+    this._timers.push(setTimeout(this.drawing.bind(this), 0));
   }
 
   endGame() {
     this._isGameActive = false;
   }
 
-  handleKeyDown() {
-    document.addEventListener('keydown', (event) => {
-      if (CONTROLS.includes(event.code)) {
-        this.key = event.code;
-      }
-    });
-  }
+  handleKeyDown = () => {
+    if (CONTROLS.includes(event.code)) {
+      this.key = event.code;
+    }
+  };
 
   getScore() {
-    this.scoreElement.textContent = this._snake.getSize() - NUM_START_PARTS;
-    if (this.scoreElement.textContent === BOARD_SIZE ** 2 - NUM_START_PARTS) {
+    const newScore = this._snake.getSize() - NUM_START_PARTS;
+
+    if (this.scoreElement) {
+      this.scoreElement.textContent = newScore;
+    }
+
+    this.gameAppEventService?.fire(
+      this.gameAppEventService.GameAppEvent.SCORE_UPDATE,
+      { detail: { score: newScore } }
+    );
+
+    if (newScore === BOARD_SIZE ** 2 - NUM_START_PARTS) {
       alert('You won this game!');
       this.endGame();
+      this.gameAppEventService?.fire(this.gameAppEventService.GameAppEvent.END);
     }
   }
 
-  handleButtonPress() {
-    this.buttonStart?.addEventListener('click', (event) => {
-      this.endGame();
+  handleButtonPress = () => {
+    this.endGame();
+    this._timers.push(
       setTimeout(() => {
         this.startNewGame();
-      }, PLAY_SPEED);
-    });
-  }
+      }, PLAY_SPEED)
+    );
+  };
 }
 
 export { Game };

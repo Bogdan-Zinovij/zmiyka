@@ -2,31 +2,36 @@ import { Snake } from './SnakeClass.js';
 import { Game } from './GameClass.js';
 import { Board, Target } from './ObjectPartsClasses.js';
 
-const mount = (root) => {
+const mount = (root, gameAppEventService, config) => {
+  const { showControls } = config ?? {};
+
   const cvs = document.createElement('canvas');
   cvs.id = 'canvas';
   cvs.width = 458;
   cvs.height = 454;
 
-  const controlsContainer = document.createElement('div');
-  const scoreElement = document.createElement('h1');
+  if (showControls) {
+    const controlsContainer = document.createElement('div');
+    const scoreElement = document.createElement('h1');
 
-  const scoreValueElement = document.createElement('span');
-  scoreValueElement.id = 'score-value';
+    const scoreValueElement = document.createElement('span');
+    scoreValueElement.id = 'score-value';
 
-  const startButtonElement = document.createElement('button');
-  startButtonElement.id = 'button-start';
-  startButtonElement.style = 'width: 280px; padding: 30px 0; font-size: 30px';
-  startButtonElement.innerText = 'Restart Game';
+    const startButtonElement = document.createElement('button');
+    startButtonElement.id = 'button-start';
+    startButtonElement.style = 'width: 280px; padding: 30px 0; font-size: 30px';
+    startButtonElement.innerText = 'Restart Game';
 
-  const scoreTextNode = document.createElement('span');
-  scoreTextNode.innerText = 'Score:';
-  scoreElement.appendChild(scoreTextNode);
-  scoreElement.appendChild(scoreValueElement);
+    const scoreTextNode = document.createElement('span');
+    scoreTextNode.innerText = 'Score:';
+    scoreElement.appendChild(scoreTextNode);
+    scoreElement.appendChild(scoreValueElement);
 
-  controlsContainer.appendChild(scoreElement);
-  controlsContainer.appendChild(startButtonElement);
-  root.appendChild(controlsContainer);
+    controlsContainer.appendChild(scoreElement);
+    controlsContainer.appendChild(startButtonElement);
+
+    root.appendChild(controlsContainer);
+  }
   root.appendChild(cvs);
 
   const ctx = cvs.getContext('2d');
@@ -36,8 +41,14 @@ const mount = (root) => {
     Snake.getInstance(),
     Target.getInstance(),
     Board.getInstance(),
-    ctx
+    ctx,
+    gameAppEventService
   );
+
+  return () => {
+    game.destroy();
+    root.replaceChildren();
+  };
 };
 
 export default mount;
